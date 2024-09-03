@@ -1,0 +1,18 @@
+{
+  "name": "wasm-monorepo",
+  "version": "1.0.0",
+  "author": "-",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "rust:dev": "cd liblisa-wasm && cargo watch -i .gitignore -i \"pkg/*\" -s \"../node_modules/.bin/wasm-pack build --target web\"",
+    "rust:build": "cd liblisa-wasm && ../node_modules/.bin/wasm-pack build --target web",
+    "dev": "concurrently --kill-others-on-fail \"yarn web:dev\"  \"yarn rust:dev\"",
+    "build": "yarn rust:build && yarn web:build",
+    "ci:build": "yarn rust:build && yarn && yarn web:build"
+  },
+  "dependencies": {
+    "concurrently": "^6.3.0",
+    "wasm-pack": "^0.12.1"
+  }
+}

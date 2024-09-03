@@ -1,0 +1,11 @@
+[package]
+name = "liblisa-wasm-shared"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+liblisa = { version = "0.1.0", default-features = false, features = [] }
+serde = { version = "1.0", features = [ "derive" ] }
+bitcode = "0.5.0"
+lzma-rs = "0.3.0"
+log = "0.4"

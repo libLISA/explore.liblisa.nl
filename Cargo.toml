@@ -1,0 +1,13 @@
+[workspace]
+members = [
+    "liblisa-wasm",
+    "liblisa-wasm-shared",
+    "liblisa-web-export"
+]
+resolver = "2"
+
+[profile.release]
+lto = "fat"
+
+[profile.dev]
+lto = "fat"
