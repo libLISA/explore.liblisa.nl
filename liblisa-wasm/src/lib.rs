@@ -3,18 +3,18 @@ use std::io::Cursor;
 
 use hex::FromHexError;
 use itertools::Itertools;
-use liblisa::arch::x64::{PrefixScope, X64Arch};
-use liblisa::arch::Scope;
-use liblisa::semantics::default::computation::SynthesizedComputation;
 use liblisa::Instruction;
+use liblisa::arch::Scope;
+use liblisa::arch::x64::{PrefixScope, X64Arch};
+use liblisa::semantics::default::computation::SynthesizedComputation;
 use liblisa_wasm_shared::group::DataGroup;
 use liblisa_wasm_shared::{EncodingResolver, EncodingWithArchitectureMap};
-use log::{debug, error, info, Level};
+use log::{Level, debug, error, info};
 use search::ReturnStatus;
 use tokio::sync::{Mutex, RwLock};
 use wasm_bindgen::prelude::*;
-use wasm_bindgen_futures::js_sys::Uint8Array;
 use wasm_bindgen_futures::JsFuture;
+use wasm_bindgen_futures::js_sys::Uint8Array;
 use web_sys::{Request, RequestInit, RequestMode, Response};
 
 use crate::encoding::WasmEncoding;

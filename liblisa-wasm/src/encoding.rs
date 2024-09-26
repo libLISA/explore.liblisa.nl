@@ -2,15 +2,15 @@ use std::collections::{HashMap, HashSet};
 use std::fmt::Write;
 
 use itertools::Itertools;
+use liblisa::Instruction;
 use liblisa::arch::x64::X64Arch;
 use liblisa::arch::{Arch, Register};
-use liblisa::encoding::dataflows::{AccessKind, Dataflows, Dest, Source};
 use liblisa::encoding::Encoding;
+use liblisa::encoding::dataflows::{AccessKind, Dataflows, Dest, Source};
 use liblisa::semantics::default::computation::SynthesizedComputation;
 use liblisa::semantics::default::smtgen::{StorageLocations, Z3Model};
 use liblisa::state::{Addr, Location, MemoryState, Permissions, SystemState};
 use liblisa::value::{Value, ValueType};
-use liblisa::Instruction;
 use log::debug;
 use wasm_bindgen::prelude::*;
 
@@ -114,41 +114,38 @@ impl WasmEncoding {
             let dest: Dest<X64Arch> = serde_json::from_str(&dest).unwrap();
             areas_set.push(dest);
             let mut tmp_bytes = Vec::new();
-            state.set_dest(
-                &dest,
-                &match dest.value_type() {
-                    ValueType::Bytes(num) => {
-                        tmp_bytes.resize(num, 0);
-                        let len = ((val.len() + 1) / 2).min(num);
-                        match hex::decode_to_slice(&val, &mut tmp_bytes[..len]) {
-                            Ok(_) => Value::Bytes(&tmp_bytes),
+            state.set_dest(&dest, &match dest.value_type() {
+                ValueType::Bytes(num) => {
+                    tmp_bytes.resize(num, 0);
+                    let len = ((val.len() + 1) / 2).min(num);
+                    match hex::decode_to_slice(&val, &mut tmp_bytes[..len]) {
+                        Ok(_) => Value::Bytes(&tmp_bytes),
+                        Err(e) => {
+                            parsing_errors.insert(dest, format!("unable to parse hexadecimal byte sequence: {e}"));
+                            continue
+                        },
+                    }
+                },
+                ValueType::Num => {
+                    if let Some(val) = val.strip_prefix("0x") {
+                        match u64::from_str_radix(val, 16) {
+                            Ok(n) => Value::Num(n),
                             Err(e) => {
-                                parsing_errors.insert(dest, format!("unable to parse hexadecimal byte sequence: {e}"));
+                                parsing_errors.insert(dest, format!("unable to parse hexadecimal number: {e}"));
                                 continue
                             },
                         }
-                    },
-                    ValueType::Num => {
-                        if let Some(val) = val.strip_prefix("0x") {
-                            match u64::from_str_radix(val, 16) {
-                                Ok(n) => Value::Num(n),
-                                Err(e) => {
-                                    parsing_errors.insert(dest, format!("unable to parse hexadecimal number: {e}"));
-                                    continue
-                                },
-                            }
-                        } else {
-                            match val.parse::<u64>() {
-                                Ok(n) => Value::Num(n),
-                                Err(e) => {
-                                    parsing_errors.insert(dest, format!("unable to parse decimal number: {e}"));
-                                    continue
-                                },
-                            }
+                    } else {
+                        match val.parse::<u64>() {
+                            Ok(n) => Value::Num(n),
+                            Err(e) => {
+                                parsing_errors.insert(dest, format!("unable to parse decimal number: {e}"));
+                                continue
+                            },
                         }
-                    },
+                    }
                 },
-            );
+            });
         }
 
         for (index, area) in self.instance.extract_memory_areas(&state.clone()).enumerate() {
@@ -220,16 +217,13 @@ impl WasmEncoding {
                 })
             })
             .map(|o| {
-                (
-                    serde_json::to_string(&o.target).unwrap(),
-                    match state.get_dest(&o.target) {
-                        Value::Bytes(b) => format!("[{}]", hex::encode(b)),
-                        Value::Num(n) => {
-                            let size = o.target.size().num_bytes() * 2;
-                            format!("0x{n:0width$x?}", width = size)
-                        },
+                (serde_json::to_string(&o.target).unwrap(), match state.get_dest(&o.target) {
+                    Value::Bytes(b) => format!("[{}]", hex::encode(b)),
+                    Value::Num(n) => {
+                        let size = o.target.size().num_bytes() * 2;
+                        format!("0x{n:0width$x?}", width = size)
                     },
-                )
+                })
             })
             .collect::<HashMap<_, _>>();
 

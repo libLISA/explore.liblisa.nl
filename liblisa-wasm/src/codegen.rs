@@ -67,8 +67,10 @@ impl<'a> SmtSolver<'a> for SmtStringSolver {
     type Int = Int;
     type Bool = Bool;
 
-    type ModelRef<'r> = ModelRef
-        where Self: 'r;
+    type ModelRef<'r>
+        = ModelRef
+    where
+        Self: 'r;
 
     type Model = Model;
 

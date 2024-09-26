@@ -1,7 +1,7 @@
 use itertools::Itertools;
+use liblisa::Instruction;
 use liblisa::arch::x64::X64Arch;
 use liblisa::semantics::default::computation::SynthesizedComputation;
-use liblisa::Instruction;
 use liblisa_wasm_shared::EncodingWithArchitectureMap;
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
