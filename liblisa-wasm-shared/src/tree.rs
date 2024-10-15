@@ -1,12 +1,12 @@
 use std::collections::HashSet;
 use std::hash::Hash;
 
+use liblisa::Instruction;
 use liblisa::arch::Arch;
 use liblisa::compare::summary::ArchComparisonSummary;
 use liblisa::encoding::indexed::EncodingId;
 use liblisa::instr::{FilterBit, InstructionFilter};
 use liblisa::semantics::Computation;
-use liblisa::Instruction;
 use log::{debug, info, trace};
 
 #[derive(Clone, Debug, bitcode::Encode, bitcode::Decode)]

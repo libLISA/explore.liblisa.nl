@@ -4,10 +4,10 @@ pub mod tree;
 use std::io::Cursor;
 
 use group::DataGroup;
+use liblisa::Instruction;
 use liblisa::arch::Arch;
 use liblisa::encoding::Encoding;
 use liblisa::instr::InstructionFilter;
-use liblisa::Instruction;
 use log::info;
 use tree::MappingTree;
 
