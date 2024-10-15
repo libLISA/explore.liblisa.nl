@@ -18,14 +18,19 @@ function numArgs(op) {
     op == "Parity" ||
     op.SignExtend !== undefined ||
     op.SetBit !== undefined ||
+    op.SwapBytes !== undefined ||
     op == "ByteMask" ||
-    op == "TrailingZeros"
+    op == "BitMask" ||
+    op == "TrailingZeros" ||
+    op == "LeadingZeros" ||
+    op == "PopCount"
   ) {
     return 1;
   } else if (
     op === "Add" ||
     op === "Sub" ||
     op === "Mul" ||
+    op === "CarrylessMul" ||
     op === "Div" ||
     op === "UnsignedDiv" ||
     op === "Rem" ||
@@ -36,7 +41,9 @@ function numArgs(op) {
     op === "Or" ||
     op === "Xor" ||
     op === "CmpLt" ||
-    op.Rol !== undefined
+    op.Rol !== undefined ||
+    op === "DepositBits" ||
+    op === "ExtractBits"
   ) {
     return 2;
   } else if (op == "IfZero") {

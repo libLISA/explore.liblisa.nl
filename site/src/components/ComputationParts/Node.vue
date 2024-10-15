@@ -88,6 +88,8 @@ export default {
         );
       } else if (op.SignExtend !== undefined) {
         return "SignExtend[" + op.SignExtend.num_bits + "]";
+      } else if (op.SwapBytes !== undefined) {
+        return "SwapBytes[" + op.SwapBytes.num_bits + "]";
       } else if (op.SetBit !== undefined) {
         return "SetBit[" + op.SetBit.bit + "]";
       } else if (op.Rol !== undefined) {
