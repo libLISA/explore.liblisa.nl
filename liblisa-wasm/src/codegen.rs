@@ -432,7 +432,7 @@ impl BitOr for Bool {
 #[derive(Clone, Debug)]
 pub struct ModelRef;
 
-impl<'a> SmtModelRef<'a, SmtStringSolver> for ModelRef {
+impl SmtModelRef<'_, SmtStringSolver> for ModelRef {
     fn to_model(&self) -> Option<Model> {
         todo!()
     }
@@ -441,7 +441,7 @@ impl<'a> SmtModelRef<'a, SmtStringSolver> for ModelRef {
 #[derive(Clone, Debug)]
 pub struct Model;
 
-impl<'a> SmtModel<'a, SmtStringSolver> for Model {
+impl SmtModel<'_, SmtStringSolver> for Model {
     fn get_const_interp(&self, _name: &BV) -> Option<BV> {
         todo!()
     }
