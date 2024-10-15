@@ -20,6 +20,8 @@ jobs:
         with:
           toolchain: nightly
           components: rustfmt clippy rust-src llvm-tools
+      - name: Install apt dev dependencies
+        run: sudo apt-get update && sudo apt-get install -y liblzma-dev
       - name: Clippy
         run: cargo clippy --no-deps
       - name: Check formatting
