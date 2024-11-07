@@ -192,14 +192,11 @@ body {
 .nav {
   display: flex;
   border-bottom: 1px solid #eee;
-  background: linear-gradient(#eee, #fff);
+  background: #1c5dcf;
   margin: -8px -8px 0 -8px;
   overflow: hidden;
   align-items: center;
   height: 2em;
-}
-
-.nav .entry {
 }
 
 .nav .entry.left {
@@ -214,9 +211,15 @@ body {
   border: none;
   background: none;
   cursor: pointer;
-  padding: 2px 8px;
+  padding: 0px 12px;
 
-  color: #333;
+  display: block;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+
+  color: #fff;
   text-decoration: none;
   text-shadow: -8px 0px 40px rgba(0 0 0 / 0%);
   transition: text-shadow .2s;
@@ -224,7 +227,7 @@ body {
 
 .nav button:hover, .nav a:hover {
   text-shadow: -8px 0px 40px rgba(0 0 0 / 100%);
-  color: #000;
+  background: rgba(255 255 150 / 25%);
 }
 
 .notice {

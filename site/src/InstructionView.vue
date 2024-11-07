@@ -1,16 +1,16 @@
 <template>
   <div>
     <div class="arch-select">
-      <span v-for="group in architectureGroups" :key="group" :class="{
+      <div v-for="group in architectureGroups" :key="group" :class="{
         'arch-group': true,
         'selected': containsArchitecture(group, selectedArch)
       }" @click="switchArch(architectureNames[group[0]])">
-        <span :for="'group' + JSON.stringify(group)">
-          <span v-for="n in group" :key="n">
+        <div class="arch-group-container" :for="'group' + JSON.stringify(group)">
+          <div class="arch" v-for="n in group" :key="n">
             {{ architectureNames[n] }}
-          </span>
-        </span>
-      </span>
+          </div>
+        </div>
+      </div>
     </div>
     <AnalysisResults
       v-if="encoding !== null"
@@ -190,15 +190,17 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  align-self: center;
+  padding: 4px;
 }
 
 .arch-group {
-  border-radius: 4px 4px;
+  border-radius: 2px;
   background: #eee;
-  border: 1px solid #bbb;
   padding: 4px;
   margin: 4px;
   cursor: pointer;
+  display: flex;
 }
 
 .arch-group:hover {
@@ -210,7 +212,20 @@ export default {
   color: #fff;
 }
 
-.arch-group span + span::before {
-  content: " | ";
+.arch-group-container {
+  display: flex;
+}
+
+.arch-group .arch {
+  border-radius: 24px;
+  margin: 2px;
+  border: 1px solid rgba(0 0 0 / 5%);
+  background: rgba(0 0 0 / 5%);
+  padding: 0px 8px;
+}
+
+.arch-group.selected .arch {
+  border: 1px solid rgba(255 255 255 / 10%);
+  background: rgba(255 255 255 / 20%);
 }
 </style>
