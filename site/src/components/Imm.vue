@@ -6,7 +6,7 @@
 export default {
   name: "Imm",
   props: {
-    value: Number,
+    value: Number | BigInt,
     chosen: String,
   },
   computed: {

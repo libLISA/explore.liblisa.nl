@@ -54,6 +54,10 @@ impl WasmEncoding {
         serde_json::to_string(&self.encoding).unwrap()
     }
 
+    pub fn part_values(&self) -> Vec<u64> {
+        self.encoding.extract_parts(&self.instr)
+    }
+
     /// Returns a string containing a JSON-array of dests
     pub fn simulation_inputs(&self) -> String {
         let mut inputs = HashMap::new();

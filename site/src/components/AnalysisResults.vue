@@ -372,25 +372,7 @@ export default {
         return [];
       }
 
-      let bytes = hexToBytes(this.instr).reverse();
-      let values = [];
-      let ns = [];
-
-      const numBits = bytes.length * 8;
-      for (let bitIndex = 0; bitIndex < numBits; bitIndex++) {
-        const bit = this.jsInfo.bits[bitIndex];
-        if (bit !== undefined && bit.Part != undefined) {
-          const val = (bytes[bitIndex >> 3] >> bitIndex % 8) & 1;
-          const i = bit.Part;
-
-          values[i] |= val << ns[i];
-          ns[i] = (ns[i] | 0) + 1;
-        }
-      }
-
-      // console.log(values);
-
-      return values;
+      return this.info.part_values();
     },
     chosenAccesses() {
       if (!this.info) {
