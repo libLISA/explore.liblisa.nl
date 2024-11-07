@@ -618,7 +618,7 @@ export default {
     },
     choosePart(partIndex, newValue) {
       let values = this.partValues;
-      values[partIndex] = newValue;
+      values[partIndex] = BigInt(newValue);
 
       let bytes = hexToBytes(this.instr).reverse();
       let ns = [];
@@ -628,13 +628,13 @@ export default {
         const bit = this.jsInfo.bits[bitIndex];
         if (bit.Part != undefined) {
           const i = bit.Part;
-          const val = (values[i] >> ns[i]) & 1;
+          const val = (Number(values[i]) >> ns[i]) & 1;
           const bitMask = 1 << bitIndex % 8;
 
           bytes[bitIndex >> 3] =
             (bytes[bitIndex >> 3] & ~bitMask) | (val << bitIndex % 8);
 
-          values[i] |= val << ns[i];
+          values[i] |= BigInt(val << (ns[i] | 0));
           ns[i] = (ns[i] | 0) + 1;
         }
       }
