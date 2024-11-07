@@ -1,13 +1,15 @@
 <template>
   <div>
-    <div class="arch-select">
-      <div v-for="group in architectureGroups" :key="group" :class="{
-        'arch-group': true,
-        'selected': containsArchitecture(group, selectedArch)
-      }" @click="switchArch(architectureNames[group[0]])">
-        <div class="arch-group-container" :for="'group' + JSON.stringify(group)">
-          <div class="arch" v-for="n in group" :key="n">
-            {{ architectureNames[n] }}
+    <div class="arch-select-container">
+      <div class="arch-select">
+        <div v-for="group in architectureGroups" :key="group" :class="{
+          'arch-group': true,
+          'selected': containsArchitecture(group, selectedArch)
+        }" @click="switchArch(architectureNames[group[0]])">
+          <div class="arch-group-container" :for="'group' + JSON.stringify(group)">
+            <div class="arch" v-for="n in group" :key="n">
+              {{ architectureNames[n] }}
+            </div>
           </div>
         </div>
       </div>
@@ -186,21 +188,48 @@ export default {
 </script>
 
 <style scoped>
+.arch-select-container {
+  display: flex;
+  justify-content: center;
+  position: sticky;
+  top: 6px;
+  z-index: 1000;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 6px;
+  width: 100%;
+}
+
 .arch-select {
   display: flex;
   justify-content: center;
   align-items: center;
   align-self: center;
-  padding: 4px;
+  padding: 0 0px;
+  background: rgba(255 255 255 / 75%);
+  backdrop-filter: blur(24px);
+  border-radius: 20px;
+  box-shadow: rgba(0 0 0 / 15%) 0 0 16px;
+  overflow: hidden;
 }
 
 .arch-group {
-  border-radius: 2px;
-  background: #eee;
+  background: rgba(255 255 255 / 25%);
   padding: 4px;
-  margin: 4px;
+  margin: 0 .5px;
   cursor: pointer;
   display: flex;
+  margin: 0 8px;
+}
+
+.arch-group:first-child {
+  margin-left: 0;
+  padding-left: 6px;
+}
+
+.arch-group:last-child {
+  margin-right: 0;
+  padding-right: 6px;
 }
 
 .arch-group:hover {
