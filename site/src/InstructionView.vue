@@ -204,7 +204,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  align-self: center;
+  align-self: stretch;
   padding: 0 0px;
   background: rgba(255 255 255 / 75%);
   backdrop-filter: blur(24px);
@@ -220,6 +220,8 @@ export default {
   cursor: pointer;
   display: flex;
   margin: 0 8px;
+  height: 100%;
+  align-items: center;
 }
 
 .arch-group:first-child {
@@ -251,10 +253,42 @@ export default {
   border: 1px solid rgba(0 0 0 / 5%);
   background: rgba(0 0 0 / 5%);
   padding: 0px 8px;
+  text-wrap: nowrap;
 }
 
 .arch-group.selected .arch {
   border: 1px solid rgba(255 255 255 / 10%);
   background: rgba(255 255 255 / 20%);
+}
+
+@media screen and (max-width: 800px) {
+  .arch-group {
+    margin: 0;
+  }
+
+  .arch-group .arch {
+    padding: 0 6px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .arch-group {
+    padding: 6px 0;
+    font-size: 15px;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .arch-group {
+    padding: 10px 0;
+    font-size: 12px;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .arch-group {
+    padding: 14px 0;
+    font-size: 8px;
+  }
 }
 </style>
