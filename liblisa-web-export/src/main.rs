@@ -6,10 +6,11 @@ use std::path::PathBuf;
 use clap::Parser;
 use itertools::Itertools;
 use liblisa::arch::x64::X64Arch;
-use liblisa::compare::summary::ArchComparisonSummary;
+use liblisa::compare::summary::{ArchComparisonSummary, ArchId};
 use liblisa::encoding::indexed::EncodingId;
 use liblisa::semantics::default::computation::SynthesizedComputation;
 use liblisa_wasm_shared::group::DataGroup;
+use liblisa_wasm_shared::table::{ComparisonTable, TableRow};
 use liblisa_wasm_shared::tree::MappingTree;
 use liblisa_wasm_shared::{ArchitectureMap, EncodingResolver, EncodingWithArchitectureMap};
 use rayon::iter::{IntoParallelIterator, ParallelIterator};
@@ -122,6 +123,39 @@ pub fn main() {
 
     std::fs::create_dir_all(&args.output_dir).unwrap();
     std::fs::write(args.output_dir.join("slices.index"), bytes).unwrap();
+
+    let arch_comp = ComparisonTable::new({
+        let mut groups = HashMap::new();
+
+
+        for g in data.encodings.iter() {
+            let arches = g.encodings.iter()
+                .map(|e| e.architectures.iter()
+                    .map(|a| a.0)
+                    .collect::<Vec<_>>()
+                )
+                .collect::<Vec<_>>();
+            let instrs = g.encodings.iter()
+                .flat_map(|e| e.encodings.iter())
+                .map(|e| *data.index[e].encoding.restrict_to(&g.filter).unwrap().instr())
+                .collect::<Vec<_>>();
+            groups.entry(arches)
+                .or_insert_with(HashSet::new)
+                .extend(instrs);
+        }
+
+        groups.into_iter()
+            .map(|(arches, instrs)| TableRow::new(arches.into_iter()
+                .map(|v| v.into_iter().map(ArchId).collect())
+                .collect(),
+                instrs.into_iter().collect::<Vec<_>>()
+            ))
+            .sorted_by_key(|g| usize::MAX - g.instrs().len())
+            .collect::<Vec<_>>()
+    });
+    let arch_comp = bincode::serialize(&arch_comp).unwrap();
+    let lzma_arch_comp = lzma::compress(&arch_comp, 9 | lzma::EXTREME_PRESET).unwrap();
+    std::fs::write(args.output_dir.join("table.data"), lzma_arch_comp).unwrap();
 
     println!("Writing leaf data...");
     // Write leaves

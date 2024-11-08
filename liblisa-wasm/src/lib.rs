@@ -3,14 +3,17 @@ use std::io::Cursor;
 
 use hex::FromHexError;
 use itertools::Itertools;
+use liblisa::compare::summary::ArchId;
 use liblisa::Instruction;
 use liblisa::arch::Scope;
 use liblisa::arch::x64::{PrefixScope, X64Arch};
 use liblisa::semantics::default::computation::SynthesizedComputation;
 use liblisa_wasm_shared::group::DataGroup;
+use liblisa_wasm_shared::table::ComparisonTable;
 use liblisa_wasm_shared::{EncodingResolver, EncodingWithArchitectureMap};
 use log::{Level, debug, error, info};
 use search::ReturnStatus;
+use table::TableWrapper;
 use tokio::sync::{Mutex, RwLock};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::JsFuture;
@@ -23,6 +26,7 @@ use crate::search::{FetchStatusCode, LookupResult, SearchResult, SearchResultEnt
 pub mod codegen;
 pub mod encoding;
 pub mod search;
+pub mod table;
 
 #[wasm_bindgen]
 extern "C" {
@@ -99,6 +103,36 @@ impl EncodingFetcher {
         }
 
         Ok(true)
+    }
+
+    #[wasm_bindgen]
+    pub async fn fetch_table(&self) -> Result<TableWrapper, ReturnStatus> {
+        use FetchStatusCode::*;
+
+        let data = self.load("table.data").await.unwrap(); // TODO
+
+        let mut decompressed = Vec::new();
+        match lzma_rs::xz_decompress(&mut Cursor::new(&data), &mut decompressed) {
+            Ok(_) => (),
+            Err(e) => {
+                error!("decompression failed: {e}");
+                return Err(ReturnStatus::from_message(
+                    DataCorrupted,
+                    String::from("unable to decompress architecture comparison table"),
+                ))
+            },
+        }
+
+        let decoded: ComparisonTable =
+            match bincode::deserialize(&decompressed) {
+                Ok(data) => data,
+                Err(e) => {
+                    error!("bincode::deserialize failed: {e}");
+                    return Err(ReturnStatus::from_status(DataCorrupted))
+                },
+            };
+
+        Ok(TableWrapper::new(decoded))
     }
 
     #[wasm_bindgen]

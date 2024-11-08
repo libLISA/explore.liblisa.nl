@@ -1,5 +1,6 @@
 pub mod group;
 pub mod tree;
+pub mod table;
 
 use std::io::Cursor;
 
