@@ -1,5 +1,5 @@
 use liblisa::Instruction;
-use liblisa_wasm_shared::table::{ComparisonTable, TableRow};
+use liblisa_wasm_shared::table::ComparisonTable;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -17,7 +17,8 @@ impl TableWrapper {
 
     #[wasm_bindgen]
     pub fn into_rows(&self) -> Vec<RowWrapper> {
-        self.table.rows()
+        self.table
+            .rows()
             .iter()
             .map(|r| {
                 let mut v = Vec::new();
@@ -55,8 +56,6 @@ impl RowWrapper {
 
     #[wasm_bindgen]
     pub fn instrs(&self) -> Vec<String> {
-        self.instrs.iter()
-            .map(|i| format!("{i:X}"))
-            .collect()
+        self.instrs.iter().map(|i| format!("{i:X}")).collect()
     }
 }

@@ -3,7 +3,6 @@ use std::io::Cursor;
 
 use hex::FromHexError;
 use itertools::Itertools;
-use liblisa::compare::summary::ArchId;
 use liblisa::Instruction;
 use liblisa::arch::Scope;
 use liblisa::arch::x64::{PrefixScope, X64Arch};
@@ -123,14 +122,13 @@ impl EncodingFetcher {
             },
         }
 
-        let decoded: ComparisonTable =
-            match bincode::deserialize(&decompressed) {
-                Ok(data) => data,
-                Err(e) => {
-                    error!("bincode::deserialize failed: {e}");
-                    return Err(ReturnStatus::from_status(DataCorrupted))
-                },
-            };
+        let decoded: ComparisonTable = match bincode::deserialize(&decompressed) {
+            Ok(data) => data,
+            Err(e) => {
+                error!("bincode::deserialize failed: {e}");
+                return Err(ReturnStatus::from_status(DataCorrupted))
+            },
+        };
 
         Ok(TableWrapper::new(decoded))
     }

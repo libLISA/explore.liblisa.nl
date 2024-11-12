@@ -127,29 +127,29 @@ pub fn main() {
     let arch_comp = ComparisonTable::new({
         let mut groups = HashMap::new();
 
-
         for g in data.encodings.iter() {
-            let arches = g.encodings.iter()
-                .map(|e| e.architectures.iter()
-                    .map(|a| a.0)
-                    .collect::<Vec<_>>()
-                )
+            let arches = g
+                .encodings
+                .iter()
+                .map(|e| e.architectures.iter().map(|a| a.0).collect::<Vec<_>>())
                 .collect::<Vec<_>>();
-            let instrs = g.encodings.iter()
+            let instrs = g
+                .encodings
+                .iter()
                 .flat_map(|e| e.encodings.iter())
                 .map(|e| *data.index[e].encoding.restrict_to(&g.filter).unwrap().instr())
                 .collect::<Vec<_>>();
-            groups.entry(arches)
-                .or_insert_with(HashSet::new)
-                .extend(instrs);
+            groups.entry(arches).or_insert_with(HashSet::new).extend(instrs);
         }
 
-        groups.into_iter()
-            .map(|(arches, instrs)| TableRow::new(arches.into_iter()
-                .map(|v| v.into_iter().map(ArchId).collect())
-                .collect(),
-                instrs.into_iter().collect::<Vec<_>>()
-            ))
+        groups
+            .into_iter()
+            .map(|(arches, instrs)| {
+                TableRow::new(
+                    arches.into_iter().map(|v| v.into_iter().map(ArchId).collect()).collect(),
+                    instrs.into_iter().collect::<Vec<_>>(),
+                )
+            })
             .sorted_by_key(|g| usize::MAX - g.instrs().len())
             .collect::<Vec<_>>()
     });

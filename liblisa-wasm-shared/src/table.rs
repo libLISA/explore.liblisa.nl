@@ -1,4 +1,5 @@
-use liblisa::{compare::summary::ArchId, Instruction};
+use liblisa::Instruction;
+use liblisa::compare::summary::ArchId;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
