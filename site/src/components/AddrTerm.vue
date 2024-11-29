@@ -1,12 +1,12 @@
 <template>
   <span v-if="term.primary.shift.mult != 0" class="term">
-    <template v-if="term.primary.shift.right != 0">(</template>
     <span v-if="term.primary.shift.mult != 1">
       {{ term.primary.shift.mult }} &times;
     </span>
+    <template v-if="term.primary.shift.right != 0">(</template>
     <slot />
-    <template v-if="term.primary.shift.right != 0">)</template>
     <span v-if="term.primary.shift.right != 0"> >> {{ term.primary.shift.right }} </span>
+    <template v-if="term.primary.shift.right != 0">)</template>
     <span v-if="term.secondary != null">
       {{ term.secondary }}
     </span>
