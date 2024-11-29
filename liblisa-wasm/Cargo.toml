@@ -33,3 +33,7 @@ features = [
     "Response",
     "Window",
 ]
+
+[lints.rust]
+# wasm-pack issue?
+unexpected_cfgs = { level = "allow", check-cfg = ['cfg(wasm_bindgen_unstable_test_coverage)'] }
